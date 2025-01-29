@@ -1,3 +1,5 @@
+"use-client"
+
 import { z } from "zod"
 
 import { FcGoogle } from "react-icons/fc"
@@ -27,28 +29,23 @@ import {
     FormMessage,
     FormField
 } from "@/components/ui/form";
-
-
-
-const formSchema = z.object({
-    name: z.string().trim().min(1, "rerquired"),
-    email: z.string().email(),
-    password: z.string().min(1, "required"),
-});
+import { registerSchema } from "../schema";
+import { useRegister } from "../api/use-register";
 
 
 export const SignUpCard = () => {
+    const { mutate } = useRegister();
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof registerSchema>>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
             email: "",
             password: "",
             name: ""
         },
     });
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log({ values })
+    const onSubmit = (values: z.infer<typeof registerSchema>) => {
+        mutate({ json: values });
     }
     return (
         <Card className="w-full h-full md:w-[487px] border-none shadow-none">
